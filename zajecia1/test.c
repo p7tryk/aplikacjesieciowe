@@ -49,7 +49,7 @@ int main()
 
 
   sleep(5);
-  int blokwane = sigpending(struktura2); // odczyta
+  int blokwane = sigpending(struktura2); // odczytanie czekajacych sygnalow do struktury 2
   if(sigismember(struktura2, SIGINT))
      printf("SIGINT czeka na blokadzie\n");
   
