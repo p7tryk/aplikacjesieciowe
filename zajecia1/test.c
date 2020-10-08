@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <signal.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 int licznik1 = 1;
 int licznik2 = 1;
@@ -35,6 +36,29 @@ int main()
     printf("nie zarejstrowano sigstop");
  
   printf("Hello World!\n");
+
+  sleep(5);
+  sigset_t * struktura = malloc(sizeof(sigset_t));
+  sigset_t * struktura2 = malloc(sizeof(sigset_t));
+
+  sigemptyset(struktura); //zaincjowanie struktury sigset_t
+  sigaddset(struktura, SIGINT); //dodanie sygnalu sigint do struktury
+  printf("blokujemy sigint\n");
+  printf("sigprocmask %d\n",sigprocmask(SIG_BLOCK, struktura, NULL));
+
+
+
+  sleep(5);
+  int blokwane = sigpending(struktura2); // odczyta
+  if(sigismember(struktura2, SIGINT))
+     printf("SIGINT czeka na blokadzie\n");
+  
+  
+  sleep(5);
+  printf("odblokowujemy sigint\n");
+  printf("sigprocmask %d\n",sigprocmask(SIG_UNBLOCK, struktura, NULL));
+
+  
   int i;
   for(;;)
     {
@@ -42,6 +66,8 @@ int main()
       fflush(stdout);
       sleep(1);
     }
-  /* scanf("%d", &i); */
+  scanf("%d", &i);
+  free(struktura);
+  free(struktura2);
   return 0;
 }
