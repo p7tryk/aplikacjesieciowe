@@ -14,7 +14,7 @@ void handler_sigint(int signal)
   printf("sigint koniec %d\n", i);
 }
 
-void handler_sigstop(int signal)
+void handler_sigterm(int signal)
 {
   int i = licznik2++;
   printf("sigterm %d\n", i);
@@ -27,8 +27,13 @@ void handler_sigstop(int signal)
 int main()
 {
   /* sleep(10); */
-  signal(SIGINT, handler_sigint);
-  signal(SIGTERM, handler_sigstop);
+  if(signal(SIGINT, handler_sigint) == SIG_ERR)
+    printf("nie zarejstrowano sigint");
+  if(signal(SIGTERM, handler_sigterm) == SIG_ERR)
+    printf("nie zarejstrowano sigterm");
+  if(signal(SIGSTOP, handler_sigterm) == SIG_ERR)
+    printf("nie zarejstrowano sigstop");
+ 
   printf("Hello World!\n");
   int i;
   for(;;)
