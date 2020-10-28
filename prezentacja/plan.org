@@ -1,0 +1,26 @@
+* Serwery, aplikacje klienckie i protokoly znakowych sesji terminalowych
+** Intro: Urzadzenia znakowe w systemach POSIX
+** Telnet
+*** Nawiazanie polaczenia
+*** Polaczenie
+*** Problemy z telnetem
+** SSH
+*** idea
+- end to end encryption
+- public/private crypto
+*** transport layer
+poczatkowa wymiana kluczy
+*** userauthentication layer
+- autentykacja
+- haslo/klucz/inne
+*** connection layer
+tunelowanie roznych rzeczy(np X11) przez roznie polaczenia ssh
+
+- kanaly
+- forwarding
+**** client requests
+
+metadane (rozmiar terminala itp)
+** SCP
+** SFTP
+*** SSHFS
