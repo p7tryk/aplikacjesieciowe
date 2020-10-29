@@ -24,9 +24,13 @@ void handler_sigchild(int signal)
 {
   printf("\nsigcld");
   int wstatus,pid = 0;
-  pid=waitpid(-1,&wstatus,WNOHANG);
-  printf("\tpid=%d\treturn=%d\n",pid,exited(wstatus));
-  fflush(stdout);
+  while(pid>0)
+    {
+      pid=waitpid(-1,&wstatus,WNOHANG);
+      if(pid>0)
+	printf("\tpid=%d\treturn=%d\n",pid,exited(wstatus));
+      fflush(stdout);
+    }
 }
 
 int main()
@@ -45,11 +49,11 @@ int main()
     {
       if(!pid)
 	{
-	  for(int i=0;i<10;i++)
+	  for(int i=0;i<8;i++)
 	    {
-	      printf("#");
+	      printf("#\n");
 	      fflush(stdout);
-	      /* sleep(1); */
+	      sleep(1);
 	    }
 	  exit(10);
 	}
@@ -63,7 +67,7 @@ int main()
 	{
 	  for(int i=0;i<10;i++)
 	    {
-	      printf("*");
+	      printf("*\n");
 	      fflush(stdout);
 	      sleep(1);
 	    }
@@ -72,14 +76,14 @@ int main()
       else
 	pid = fork();
     }
-  sleep(20);
+   //sleep(20);
   pid=0;
-  while(pid>=0)
-    {
+  /* while(pid>=0) */
+  /*   { */
       pid=wait(&status);
-      printf("\npid=%d\treturn=%d",pid,exited(status));
-      fflush(stdout);
-    }
+      printf("\npid=%d\treturn=%d\n",pid,exited(status));
+  /*     fflush(stdout); */
+  /*   } */
   
   exit(0);
 }
