@@ -1,0 +1,80 @@
+% Created 2020-10-28 śro 10:35
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{Patryk Kaniewski}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={Patryk Kaniewski},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.1 (Org mode 9.3)}, 
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents
+
+\section{Serwery, aplikacje klienckie i protokoly znakowych sesji terminalowych}
+\label{sec:org7a35478}
+\subsection{Intro: Urzadzenia znakowe w systemach POSIX}
+\label{sec:org3188df9}
+\subsection{Telnet}
+\label{sec:org71e5417}
+\subsubsection{Nawiazanie polaczenia}
+\label{sec:orge998fcf}
+\subsubsection{Polaczenie}
+\label{sec:org27536f4}
+\subsubsection{Problemy z telnetem}
+\label{sec:orgff1e95e}
+\subsection{SSH}
+\label{sec:orgf2e429b}
+\subsubsection{idea}
+\label{sec:orgbb65263}
+\begin{itemize}
+\item end to end encryption
+\item public/private crypto
+\end{itemize}
+\subsubsection{transport layer}
+\label{sec:org6c0fb18}
+poczatkowa wymiana kluczy
+\subsubsection{userauthentication layer}
+\label{sec:orgc51a016}
+\begin{itemize}
+\item autentykacja
+\item haslo/klucz/inne
+\end{itemize}
+\subsubsection{connection layer}
+\label{sec:orgff7fe6f}
+tunelowanie roznych rzeczy(np X11) przez roznie polaczenia ssh
+
+\begin{itemize}
+\item kanaly
+\item forwarding
+\end{itemize}
+\begin{enumerate}
+\item client requests
+\label{sec:org5088acf}
+
+metadane (rozmiar terminala itp)
+\end{enumerate}
+\subsection{SCP}
+\label{sec:orga0f988d}
+\subsection{SFTP}
+\label{sec:orged7aca9}
+\subsubsection{SSHFS}
+\label{sec:orgec36fa7}
+\end{document}
