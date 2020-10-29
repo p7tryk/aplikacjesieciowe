@@ -3,37 +3,14 @@
 #include <unistd.h>
 #include <sys/wait.h>
 #include <signal.h>
+#include "matrixoperations.c"
 
 struct task{
   int col;
   int row;
 };
 
-void printMatrix(int  matrix[][3], int row, int col)
-{
-  printf("\nmacierz:\n");
-  for(int i=0; i<row; ++i)
-    for(int j=0; j<col; ++j)
-      {
-	printf("%d\t",matrix[i][j]);
-	if(j==col-1)
-	  printf("\n\n");
-      }
-}
 
-void multiplyMatrix(int a[][3],int b[][3],int out[][3], int rowA, int colA,int rowB,int colB)
-{
-  for(int i=0;i<rowA;i++)
-    {
-      for(int n=0;n<rowB;n++)
-	{
-	  for(int k=0; k<colB;k++)
-	    {
-	      out[i][n]+= a[i][k] * b[k][n];
-	    }
-	}
-    }
-}
 
 int multiplyMatrixProcess(int a[][3],int b[][3] , int rowA, int colA,int rowB,int colB, struct task process)
 {

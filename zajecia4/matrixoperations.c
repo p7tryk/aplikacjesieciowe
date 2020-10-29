@@ -61,36 +61,3 @@ void multiplyMatrix(int a[][3],int b[][3],int out[][3], int rowA, int colA,int r
     }
 }
 
-int main()
-{
-
-  int c[3][3];
-  int d[3][3] = {
-    {0,0,0},
-    {0,0,0},
-    {0,0,0}
-  };
-  int rowA =3;
-  int colA =3;
-  int rowB =3;
-  int colB =3;
-  
-  int a[3][3] = {
-    {1,2,3},
-    {4,5,6},
-    {7,8,9}
-  };
-
-  int b[3][3] = {
-    {1,2,3},
-    {4,5,6},
-    {7,8,9}
-  };
-  createMatrix(a,b,rowA,colA,rowB,colB);
-  addMatrix(a,b,c,rowA,colA,rowB,colB,0);
-  printMatrix(c,rowA,colA);
-  multiplyMatrix(a,b,d,rowA,colA,rowB,colB);
-  printMatrix(d,rowA,colA);
-
-  
-}
