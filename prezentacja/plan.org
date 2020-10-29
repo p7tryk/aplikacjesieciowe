@@ -1,3 +1,4 @@
+# BARDZIEJ UZYTKOWO MNIEJ TECHNICZNIE
 * Serwery, aplikacje klienckie i protokoly znakowych sesji terminalowych
 ** Intro: Urzadzenia znakowe w systemach POSIX
 ** Telnet
