@@ -1,25 +1,0 @@
-
-macierze.c,516
-struct task{task8,132
-  int col;col9,145
-  int col;task::col9,145
-  int row;row10,156
-  int row;task::row10,156
-int multiplyMatrixProcess(int a[][3],int b[][3] , int rowA, int colA,int rowB,int colB, struct tmultiplyMatrixProcess15,173
-int exited(int status)exited26,405
-int result[3][3] = {{0,0,0},{0,0,0},{0,0,0}};result41,591
-int test[3][3] = {{0,0,0},{0,0,0},{0,0,0}};test42,637
-int pidtable[9];pidtable43,681
-void handler_sigchild(int signal)handler_sigchild45,699
-int main()main63,1010
-
-matrixoperations.c,431
-#define MAX_SIZE MAX_SIZE2,19
-void createMatrix(int a[][3], int b[][3], int rowA,int colA, int rowB, int colB)createMatrix4,39
-void printMatrix(int matrix[][3], int row, int col)printMatrix23,428
-void addMatrix(int a[][3],int b[][3],int c[][3], int rowA, int colA,int rowB,int colB,int sign)addMatrix34,643
-void multiplyMatrix(int a[][3],int b[][3],int out[][3], int rowA, int colA,int rowB,int colB)multiplyMatrix49,899
-
-makefile,57
-macierze.out: macierze.cmacierze.out1,0
-run :run3,60

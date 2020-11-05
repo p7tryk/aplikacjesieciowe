@@ -4,6 +4,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include "matrixoperations.c"
+#define SIZE 4
 
 struct task{
   int col;
@@ -12,7 +13,7 @@ struct task{
 
 
 
-int multiplyMatrixProcess(int a[][3],int b[][3] , int rowA, int colA,int rowB,int colB, struct task process)
+int multiplyMatrixProcess(int a[][SIZE],int b[][SIZE] , int rowA, int colA,int rowB,int colB, struct task process)
 {
   int result = 0;
   
@@ -38,9 +39,9 @@ int exited(int status)
 
 
 
-int result[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
-int test[3][3] = {{0,0,0},{0,0,0},{0,0,0}};
-int pidtable[9];
+int result[SIZE][SIZE] = {{0,0,0},{0,0,0},{0,0,0}};
+int test[SIZE][SIZE] = {{0,0,0},{0,0,0},{0,0,0}};
+int pidtable[SIZE*SIZE];
 
 void handler_sigchild(int signal)
 {
@@ -49,11 +50,11 @@ void handler_sigchild(int signal)
   pid=waitpid(-1,&wstatus,WNOHANG);
   printf("\tpid=%d\treturn=%d\n",pid,exited(wstatus));
   fflush(stdout);
-  for(int i=0;i<9;i++)
+  for(int i=0;i<SIZE*SIZE;i++)
     {
       if(pid==pidtable[i])
 	{
-	  result[i/3][i%3] = exited(wstatus);
+	  result[i/SIZE][i%SIZE] = exited(wstatus);
 	  break;
 	}
     }
@@ -62,8 +63,8 @@ void handler_sigchild(int signal)
 
 int main()
 {
-  /* if(signal(SIGCLD, handler_sigchild) == SIG_ERR) */
-  /*   printf("nie zarejstrowano sigcld\n"); */
+  if(signal(SIGCLD, handler_sigchild) == SIG_ERR)
+    printf("nie zarejstrowano sigcld\n");
 
 
   struct task process;
@@ -72,16 +73,16 @@ int main()
   fflush(stdout);
   int pid = 1;
 
-  int a[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
-  int b[3][3] = {{1,2,3},{4,5,6},{7,8,9}};
-  int rowA=3,rowB=3,colA=3,colB=3;
+  int a[SIZE][SIZE] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
+  int b[SIZE][SIZE] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
+  int rowA=SIZE,rowB=SIZE,colA=SIZE,colB=SIZE;
 
-  for(int i=0;i<9;i++)
+  for(int i=0;i<SIZE*SIZE;i++)
     {
       if(pid>0)
 	{
-	  process.row=i/3;
-	  process.col=i%3;
+	  process.row=i/SIZE;
+	  process.col=i%SIZE;
 	  pid = fork();
 	  pidtable[i] = pid;
 	}
@@ -91,25 +92,21 @@ int main()
 	}
     }
 
-
   multiplyMatrix(a,b,test,rowA,colA,rowB,colB);
   printf("test mnozenie\n");
   printMatrix(test,rowA,colB);
 
-
-
-  
   pid=0;
   while(pid>=0)
     {
       pid=wait(&status);
       printf("\npid=%d\treturn=%d",pid,exited(status));
       fflush(stdout);
-      for(int i=0;i<9;i++)
+      for(int i=0;i<SIZE*SIZE;i++)
 	{
 	  if(pid==pidtable[i])
 	    {
-	      result[i/3][i%3] = exited(status);
+	      result[i/SIZE][i%SIZE] = exited(status);
 	      break;
 	    }
 	}
