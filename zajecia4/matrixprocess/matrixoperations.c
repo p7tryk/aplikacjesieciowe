@@ -1,7 +1,7 @@
 #include <stdio.h>
-#define MAX_SIZE 3
+#define SIZE 3
 
-void createMatrix(int a[][3], int b[][3], int rowA,int colA, int rowB, int colB)
+void createMatrix(int a[][SIZE], int b[][SIZE], int rowA,int colA, int rowB, int colB)
 {
   printf("macierz A\n");
   for(int i=0; i<rowA; i++)
@@ -20,7 +20,7 @@ void createMatrix(int a[][3], int b[][3], int rowA,int colA, int rowB, int colB)
       }
 }
 
-void printMatrix(int matrix[][3], int row, int col)
+void printMatrix(int matrix[][SIZE], int row, int col)
 {
   printf("macierz:\n");
   for(int i=0; i<row; ++i)
@@ -31,7 +31,7 @@ void printMatrix(int matrix[][3], int row, int col)
 	  printf("\n\n");
       }
 }
-void addMatrix(int a[][3],int b[][3],int c[][3], int rowA, int colA,int rowB,int colB,int sign)
+void addMatrix(int a[][SIZE],int b[][SIZE],int c[][SIZE], int rowA, int colA,int rowB,int colB,int sign)
 {
   if(sign!=0)
     sign=-1;
@@ -46,7 +46,7 @@ void addMatrix(int a[][3],int b[][3],int c[][3], int rowA, int colA,int rowB,int
     }
   
 }
-void multiplyMatrix(int a[][3],int b[][3],int out[][3], int rowA, int colA,int rowB,int colB)
+void multiplyMatrix(int a[][SIZE],int b[][SIZE],int out[][SIZE], int rowA, int colA,int rowB,int colB)
 {
   for(int i=0;i<rowA;i++)
     {

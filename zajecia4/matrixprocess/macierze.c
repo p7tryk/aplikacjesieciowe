@@ -4,7 +4,7 @@
 #include <sys/wait.h>
 #include <signal.h>
 #include "matrixoperations.c"
-#define SIZE 4
+#define SIZE 3
 
 struct task{
   int col;
@@ -73,8 +73,8 @@ int main()
   fflush(stdout);
   int pid = 1;
 
-  int a[SIZE][SIZE] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
-  int b[SIZE][SIZE] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,16}};
+  int a[SIZE][SIZE] = {{1,2,3},{4,5,6},{7,8,9}};
+  int b[SIZE][SIZE] = {{1,2,3},{4,5,6},{7,8,9}};
   int rowA=SIZE,rowB=SIZE,colA=SIZE,colB=SIZE;
 
   for(int i=0;i<SIZE*SIZE;i++)
