@@ -9,20 +9,20 @@
 int main(int argc, char** argv)
 {
   int n, i;
-  int p[2];
-  pipe(p);
-  int p2[2];
-  pipe(p2);
+  int forwardpipe[2];
+  pipe(forwardpipe);
+  int returnpipe[2];
+  pipe(returnpipe);
   if(fork() == 0)
     {
       
-      close(p[1]);
-      close(p2[0]);
+      close(forwardpipe[1]);
+      close(returnpipe[0]);
       /* proces potomny czyta */
       for (;;)
 	{
-	  read(p[0], &n, sizeof (int));
-	  write(p2[1],&n,sizeof(int));
+	  read(forwardpipe[0], &n, sizeof (int));
+	  write(returnpipe[1],&n,sizeof(int));
 	  for (i = 0; i < n; i++)
 	    {
 	      printf("dziecko: %d\n", n);
@@ -37,8 +37,8 @@ int main(int argc, char** argv)
     }
   else
     {
-      close(p[0]);
-      close(p2[1]);
+      close(forwardpipe[0]);
+      close(returnpipe[1]);
       /* proces macierzysty pisze */
       for (;;)
 	{
@@ -46,15 +46,15 @@ int main(int argc, char** argv)
 	  printf("parent: ");
 	  fflush(stdout);
 	  scanf("%d", &n);
-	  write(p[1], &n, sizeof (int));
+	  write(forwardpipe[1], &n, sizeof (int));
 	  
-	  while(read(p2[0],&input,sizeof(int))!=0)
+	  while(read(returnpipe[0],&input,sizeof(int))!=0)
 	    {
-	      fflush(stdout);
 	      if(input==n)
 		{
 		  printf("parent: potwierdzono %d\n", n);
 		  fflush(stdout);
+		  //ladnie wychodzi
 		  wait(NULL);
 		  return 0;
 		}
