@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
-#define THREADS 12
+#include <time.h>
+
+#define MAX_THREADS 12
 #define START 1
-#define END 10000000
+#define END 15000000
 
 //TO JEST SUPER BARDZIEJ SKOMPLIKOWANE NIZ POWINNO BYC
 
@@ -21,28 +23,32 @@ struct meta{
 
 int singlethread(int poczatek, int koniec);
 int czyPierwsza(int n);
-int multithread(int poczatek, int koniec);
+int multithread(int poczatek, int koniec, int numthreads);
 void * thread(void * arg);
 
 int main(int argc, char *argv[])
 {
-    int poczatek=START, koniec=END;
+  int threads;
+  int poczatek=START, koniec=END;
 
-    time_t timestart;
-    time_t timeend;
+  time_t timestart;
+  time_t timeend;
     
-    timestart = time(NULL);
-    int single = singlethread(poczatek, koniec);
-    timeend = time(NULL);
-    
-    printf("W [%d-%d] znajduje się: %d liczb pierwszych\nzajelo to %d wątkom %d sekund\n", poczatek, koniec, single, 1,(int)(timeend-timestart));
-    
-    timestart = time(NULL);
-    int multi = multithread(poczatek, koniec);
-    timeend = time(NULL);
-    
-    printf("W [%d-%d] znajduje się: %d liczb pierwszych\nzajelo to %d wątkom %d sekund\n", poczatek, koniec, multi, THREADS,(int)(timeend-timestart));
-    exit(EXIT_SUCCESS);
+  timestart = time(NULL);
+  int single = singlethread(poczatek, koniec);
+  timeend = time(NULL);
+  
+  printf("W [%d-%d] znajduje się: %d liczb pierwszych\nzajelo programowi jednowatkowemu %d sekund\n",
+	 poczatek, koniec, single,(int)(timeend-timestart));
+
+  for(threads=MAX_THREADS;threads>0;threads--)
+    {
+      timestart = time(NULL);
+      int multi = multithread(poczatek, koniec,threads);
+      timeend = time(NULL);
+      printf("W [%d-%d] znajduje się: %d liczb pierwszych\nzajelo to %d wątkom %d sekund\n",
+	     poczatek, koniec, multi, threads,(int)(timeend-timestart));
+    }
 }
 
 int singlethread(int poczatek,int koniec)
@@ -57,35 +63,28 @@ int singlethread(int poczatek,int koniec)
 }
 
 
-int multithread(int poczatek, int koniec)
+int multithread(int poczatek, int koniec,int numthreads)
 {
-  int threads = THREADS;
+  int threads = numthreads;
   /* if(threads<(koniec-poczatek)) //dla bardzo malych zakresow */
   /*   threads=koniec-poczatek; */
 
-  
-
   pthread_t * tid = malloc(threads*sizeof(pthread_t));
-  
   struct meta * args = (struct meta*)malloc(sizeof(struct meta));
-
   args->poczatek=poczatek;
   args->koniec=koniec;
   args->threads=threads;
   args->offset=0;
+  
   //return array
   args->values = (int*) malloc(threads*sizeof(int));
   pthread_mutex_init(&(args->lock),NULL);
 
   //create threads
-  
   for(int i=0; i<threads;i++)
     {
       pthread_create(&tid[i],NULL,thread,args);
     }
-
-
-  //asdasda
 
   //wait all threads;
   for(int i=0; i<threads;i++)
@@ -94,6 +93,7 @@ int multithread(int poczatek, int koniec)
       fflush(stdout);
       pthread_join(tid[i], NULL);
     }
+  
   //count all threads;
   int liczbapierwszych =0;
   for(int  i=0; i<threads;i++)
@@ -142,7 +142,7 @@ int czyPierwsza(int n)
     int i;
     for (i = 2; i * i <= n; i++)
     {
-        if ((n % i) == 0)
+        if (!(n % i))
         {
             return 0;
         }
