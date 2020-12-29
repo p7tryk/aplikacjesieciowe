@@ -10,11 +10,7 @@
 #define PORTNO 10022
 #define BUFSIZE 500
 
-struct svc_arg
-{
-  int sock;
-  struct sockaddr client;
-};
+//SERVER
 
 void handler_sigcld(int sig)
 {
@@ -22,44 +18,13 @@ void handler_sigcld(int sig)
   while (waitpid(-1, &status, WNOHANG) > 0);
 }
 
-void shell(char * command)
+void shell(char * command, struct sockaddr * client, socklen_t client_length)
 {
   
 }
-
-
-void *service(void *arg)
+void thread(void * arg)
 {
-  int bytes;
-  char * buffer = malloc (sizeof(char)*BUFSIZE);
-  struct  svc_arg * service = (struct svc_arg *) arg;
 
-  printf("connection from %s\n",service->client.sa_data);
-  
-  while(1)
-    {
-      bytes = recv(service->sock, buffer, BUFSIZE-1,0);
-      if(bytes>0)
-	{
-	if(fork()==0)
-	  {
-	    printf("fork()\n)");
-	    close(1);
-	    dup(service->sock);
-	    printf("read %d bytes\n",bytes);
-	    printf("%s",buffer);
-	    exit(0);
-	  }
-	}
-      else
-	{
-	  perror("read");
-	  printf("read %d\n",bytes);
-	  break;
-	}
-    }
-  free(buffer);
-  return arg;
 }
 
 int main(int argc, char** argv)
@@ -67,7 +32,6 @@ int main(int argc, char** argv)
   struct sockaddr_in server;
 
   int sock, opt;
-  struct svc_arg a;
   signal(SIGCLD, handler_sigcld);
   sock = socket(AF_INET, SOCK_STREAM, 0);
   opt = 1;
@@ -80,22 +44,27 @@ int main(int argc, char** argv)
       perror("bind");
       exit(1);
     }
+
   listen(sock, 5);
 
-  struct sockaddr client;
-  
-  for (;;)
+  while(1)
     {
-      a.sock = accept(sock, &client, NULL);
-      memcpy(&a.client, &client, sizeof(struct sockaddr));
-      if (fork() == 0)
+      int clientsocket;
+      clientsocket=accept(sock,NULL, NULL);
+
+      char * buffer = malloc(sizeof(char)*BUFSIZE);
+      if(clientsocket>0)
 	{
-	  printf("fork()\n");
-	  close(sock);
-	  service(&a);
-	  close(a.sock);
-	  exit(0);
-        }
-      close(a.sock);
+	  sprintf(buffer,"hi from server\n");
+	  printf("sending to socket:\n%s",buffer);
+	  send(clientsocket,buffer, strlen(buffer),0);
+	  int n = recv(clientsocket,buffer, BUFSIZE, 0);
+	  printf("receiving from socket:\n");
+	  write(1, buffer, n);
+	}
+      else
+	perror("accept");
+  
+      free(buffer);
     }
 }

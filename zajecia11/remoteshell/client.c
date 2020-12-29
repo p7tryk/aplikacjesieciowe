@@ -8,23 +8,26 @@
 #define PORTNO 10022
 
 //CLIENT
-void sendcommand(char * command, int sock)
+void sendcommand(char * command, int sock, int flags, struct sockaddr * server, socklen_t * server_length)
 {
-  int x = write(sock, command, strlen(command));
-  printf("written %d\n",x);
+  struct sockaddr_in testclient;
+  socklen_t testclient_length;
   char * buffer = malloc(sizeof(char)*BUFSIZE);
-  sleep(1);
-  int n = read(sock, buffer, BUFSIZE - 1);
-  if (n > 0)
-    {
-      buffer[n] = 0;
-      printf("przeczytal %d bajtow, wartosc:\n %s", n, buffer);
-    }
-  sleep(5);
+  int sentbytes = sendto(sock, command, strlen(command), 0, server, *server_length);
+  printf("written %d\n",sentbytes);
+
+  int receivedbytes = recvfrom(sock, buffer, BUFSIZE,flags, (struct sockaddr *) &testclient, &testclient_length);
+  printf("received %d\n",receivedbytes);
+  write(1, buffer, strlen(buffer));
+
+  
+  free(buffer);
 }
-void *loop(void *arg) 
+
+int main(int argc, char** argv)
 {
   struct sockaddr_in server;
+  socklen_t server_length;
   unsigned char localhost[] = {127, 0, 0, 1};
   int sock;
   sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -34,15 +37,14 @@ void *loop(void *arg)
   server.sin_port = htons(PORTNO);
   if (connect(sock, (struct sockaddr *) &server, sizeof (server)))
     {
-      printf("polaczenie nieudane\n");
+      perror("connect");
+      exit(0);
     }
-  sendcommand("ls",sock);
-  return arg;
-}
 
+  char * newmessage = malloc(sizeof(char)*BUFSIZE);
+  sprintf(newmessage, "hi from client\n");
+  sendcommand(newmessage,sock, 0 ,(struct sockaddr*)&server,&server_length);
 
-int main(int argc, char** argv)
-{
-  loop(NULL);
+  free(newmessage);
   return (EXIT_SUCCESS);
 }
