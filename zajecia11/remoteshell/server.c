@@ -1,3 +1,4 @@
+#include "define.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -8,10 +9,6 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-#define PORTNO 10022
-#define BUFSIZE 500
-#define REDCOLOR "\e[0;91m"
-#define RESETCOLOR "\e[0m"
 
 //SERVER
 struct thread_info
@@ -82,7 +79,7 @@ void * socketthread(void * arg)
   return NULL;
 }
 
-int main(int argc, char** argv)
+int main()
 {
   struct sockaddr_in server;
 
