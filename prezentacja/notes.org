@@ -1,0 +1,3 @@
+* 30/40 punktow
+jednak nie znalazłem w niej przykładów praktycznych o których rozmawialiśmy czyli przykład jak krok po kroku wygenerować klucze i zapewnić sobie automatyczną autoryzację i kilka innych jak uruchomienie serwera ssh i dołączenie klienta. 
+** test

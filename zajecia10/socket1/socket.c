@@ -37,7 +37,7 @@ int main()
       exit(1);
     }
   
-  char request[] = "GET /android.php HTTP/1.0\r\n\r\n";
+  char request[] = "GET / HTTP/1.1\r\nHost: 127.0.0.1:80\r\n\r\n";
   char * buffer = (char *) malloc(500*sizeof(char));
   
   /* write(sock, request, sizeof(buffer)); */
@@ -52,7 +52,7 @@ int main()
 
       while ((n = read(sock, buffer, 500)) > 0)
 	{
-	  printf("\nreading %d",n);
+	  printf("\nreading %d\n",n);
 	  write(STDOUT_FILENO, buffer, n);
 	}   
     }

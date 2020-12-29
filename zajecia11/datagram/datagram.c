@@ -23,22 +23,22 @@ int main(int argc, char** argv)
   struct sockaddr_in testclient;
   //fixed port for clietn
   
-  /* struct sockaddr_in client; */
-  /* memset(&client, 0, sizeof (client)); */
-  /* client.sin_family = AF_INET; */
-  /* memcpy(&client.sin_addr, localhost, 4); */
-  /* client.sin_port = htons(20000); */
-  /* x = 0; */
+  struct sockaddr_in client;
+  memset(&client, 0, sizeof (client));
+  client.sin_family = AF_INET;
+  memcpy(&client.sin_addr, localhost, 4);
+  client.sin_port = htons(20000);
+  x = 0;
 
 
  
 
-  /* if (bind(sock, (struct sockaddr *) &client, sizeof (client))) */
-  /*   { */
-  /*     perror("bind"); */
-  /*     exit(1); */
-  /*   } */
-  //
+  if (bind(sock, (struct sockaddr *) &client, sizeof (client)))
+    {
+      perror("bind");
+      // exit(1);
+    }
+  
   
   for (;;)
     {
@@ -48,7 +48,7 @@ int main(int argc, char** argv)
       sleep(1);
       //czekam na potwierdzenie
       //recv(sock, buff,sizeof(buff), 0);
-      recvfrom(sock, &x, sizeof (int), 0, (struct sockaddr *) &testclient, &clen);
+      recvfrom(sock, buff, sizeof (buff), 0, (struct sockaddr *) &testclient, &clen);
       unsigned char *a = (unsigned char *) &testclient.sin_addr;
       printf("Od %d.%d.%d.%d:%d otrzymano wartosc %d\n", a[0], a[1], a[2], a[3], ntohs(testclient.sin_port), x);
       
