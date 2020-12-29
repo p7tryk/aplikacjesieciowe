@@ -9,3 +9,4 @@
 #define ANSI_COLOR_RESET   "\x1b[0m"
 #define ANSI_BOLD          "\x1b[1m"
 #define IP_ADDR {127, 0, 0, 1}
+#define MAXTHREADS 4

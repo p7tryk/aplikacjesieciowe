@@ -16,13 +16,21 @@ void sendcommand(char * command, int sock, int flags, char * buffer)
   if(sentbytes > 0)
     printf("\nwritten %d\n",sentbytes);
   else
-    perror("sendto");
-
+    {
+      perror("send");
+      printf("broken socket\n");
+      exit(0);
+    }
   sleep(1);
-  for(int receivedbytes = recv(sock,buffer,BUFSIZE,flags);receivedbytes>0;receivedbytes = recv(sock, buffer, BUFSIZE,flags))
+  int receivedbytes = 0;
+  for(receivedbytes = recv(sock,buffer,BUFSIZE,flags);receivedbytes>0;receivedbytes = recv(sock, buffer, BUFSIZE,flags))
     {
       printf("\nreceived %d\n",receivedbytes);
       write(1, buffer, receivedbytes);
+    }
+  if(receivedbytes<0)
+    {
+      perror("recv");
     }
 }
 
@@ -33,7 +41,6 @@ int main(int argc, char** argv)
     clientno = atoi(argv[1]);
   
   struct sockaddr_in server;
-  socklen_t server_length;
   unsigned char localhost[] = IP_ADDR;
   int sock;
   sock = socket(AF_INET, SOCK_STREAM, 0);

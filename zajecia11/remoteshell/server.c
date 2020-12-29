@@ -9,19 +9,19 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
-
 //SERVER
+
+struct thread_status
+{
+  int status[MAXTHREADS];
+  pthread_t thread_array[MAXTHREADS];
+} global_threads;
+
 struct thread_info
 {
   int socketfd;
   int threadnum;
 };
-
-void handler_sigcld(int sig)
-{
-  int status;
-  while (waitpid(-1, &status, WNOHANG) > 0);
-}
 
 void shell(char * command, int fd)
 {
@@ -56,27 +56,39 @@ void * socketthread(void * arg)
 	}
       buffer[receivedbytes+1]=EOF;
       shell(buffer,localinfo->socketfd);
-      /* sprintf(buffer,"hi from server\n"); */
-      /* int sentbytes = send(localinfo->socketfd,buffer, strlen(buffer),0); */
-      /* if(sentbytes>0) */
-      /* 	{ */
-      /* 	  printf("\nThread %d:\tsending to socket:\n",localinfo->threadnum); */
-      /* 	  write(1, buffer, sentbytes); */
-      /* 	} */
-      /* else */
-      /* 	{ */
-      /* 	  perror("recv"); */
-      /* 	  break; */
-      /* 	} */
     }
 
 
 
-  printf("Thread %d:\tFinishing\n",localinfo->threadnum);
+  printf(ANSI_COLOR_BLUE "Thread %d:\tFinishing\n" ANSI_COLOR_RESET,localinfo->threadnum);
   free(buffer);
   close(localinfo->socketfd);
+  global_threads.status[localinfo->threadnum] = 0;
   free(localinfo);
-  return NULL;
+  pthread_exit(NULL);
+}
+int queuejob()
+{
+  while(1)
+    {
+    for(int i=0;i<MAXTHREADS;i++)
+      {
+	//printf("thread %d = %d\n",i,global_threads.status[i]);
+	if(global_threads.status[i]==0)
+	  {
+	    global_threads.status[i]=1;
+	    return i;
+	  }
+      }
+    printf(ANSI_COLOR_RED "no empty threads!\nwaiting\n" ANSI_COLOR_RESET);
+    sleep(5);
+    }
+}
+
+void initthreads()
+{
+  for(int i=0;i<MAXTHREADS;i++)
+    global_threads.status[i] = 0;
 }
 
 int main()
@@ -84,7 +96,6 @@ int main()
   struct sockaddr_in server;
 
   int sock, opt;
-  signal(SIGCLD, handler_sigcld);
   sock = socket(AF_INET, SOCK_STREAM, 0);
   opt = 1;
   setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof (opt));
@@ -99,21 +110,23 @@ int main()
 
   listen(sock, 5);
 
-  int threadcount = 0;
+  initthreads();
 
   while(1)
     {
+      struct sockaddr_in test;
+      socklen_t testlen;
       int clientsocket;
-      clientsocket=accept(sock,NULL, NULL);
+      clientsocket=accept(sock,(struct sockaddr*) &test, &testlen);
       if(clientsocket>0)
 	{
 	  struct thread_info * newthread = malloc(sizeof(struct thread_info));
-	  pthread_t thread;
-	  newthread->threadnum = threadcount;
-	  printf("spinning thread %d to accept\n", threadcount++);
+	  newthread->threadnum = queuejob();
+	  unsigned char *a = (unsigned char *) &test.sin_addr;
+	  printf(ANSI_COLOR_GREEN "spinning thread %d to accept %d.%d.%d.%d:%d\n" ANSI_COLOR_RESET, newthread->threadnum,a[0],a[1],a[2],a[3], ntohs(test.sin_port));
 	 
 	  newthread->socketfd = clientsocket;
-	  pthread_create(&thread,NULL,socketthread,newthread);
+	  pthread_create(&global_threads.thread_array[newthread->threadnum],NULL,socketthread,newthread);
 	  /* socketthread(newthread); */
 	}
       else
