@@ -23,73 +23,11 @@ struct thread_info
   int threadnum;
 };
 
-void shell(char * command, int fd)
-{
-  int pid = fork();
-  if(pid==0)
-    {
-      dup2(fd, STDOUT_FILENO);
-      dup2(fd, STDERR_FILENO);
-      execl("/bin/bash", "bash", "-c", command, (char *) NULL);
-    }
-  else
-    waitpid(pid,NULL,0);
-}
-void * socketthread(void * arg)
-{
-  struct thread_info * localinfo = (struct thread_info *) arg;
-  char * buffer = malloc(sizeof(char)*BUFSIZE);
+int queuejob();
+void initthreads();
+void * socketthread(void * arg);
+void shell(char * command, int fd);
 
-  while(1)
-    {
-      int receivedbytes = recv(localinfo->socketfd,buffer, BUFSIZE, 0);
-      if(receivedbytes>0)
-	{
-	  printf("\nThread %d:\treceiving from socket:\n",localinfo->threadnum);
-	  write(1, buffer, receivedbytes);
-	  printf("\n");
-	}
-      else
-	{
-	  perror("recv");
-	  break;
-	}
-      buffer[receivedbytes+1]=EOF;
-      shell(buffer,localinfo->socketfd);
-    }
-
-
-
-  printf(ANSI_COLOR_BLUE "Thread %d:\tFinishing\n" ANSI_COLOR_RESET,localinfo->threadnum);
-  free(buffer);
-  close(localinfo->socketfd);
-  global_threads.status[localinfo->threadnum] = 0;
-  free(localinfo);
-  pthread_exit(NULL);
-}
-int queuejob()
-{
-  while(1)
-    {
-    for(int i=0;i<MAXTHREADS;i++)
-      {
-	//printf("thread %d = %d\n",i,global_threads.status[i]);
-	if(global_threads.status[i]==0)
-	  {
-	    global_threads.status[i]=1;
-	    return i;
-	  }
-      }
-    printf(ANSI_COLOR_RED "no empty threads!\nwaiting\n" ANSI_COLOR_RESET);
-    sleep(5);
-    }
-}
-
-void initthreads()
-{
-  for(int i=0;i<MAXTHREADS;i++)
-    global_threads.status[i] = 0;
-}
 
 int main()
 {
@@ -132,4 +70,74 @@ int main()
       else
 	perror("accept");
     }
+}
+
+int queuejob()
+{
+  while(1)
+    {
+    for(int i=0;i<MAXTHREADS;i++)
+      {
+	//printf("thread %d = %d\n",i,global_threads.status[i]);
+	if(global_threads.status[i]==0)
+	  {
+	    global_threads.status[i]=1;
+	    return i;
+	  }
+      }
+    printf(ANSI_COLOR_RED "no empty threads!\nwaiting\n" ANSI_COLOR_RESET);
+    sleep(5);
+    }
+}
+
+void initthreads()
+{
+  for(int i=0;i<MAXTHREADS;i++)
+    global_threads.status[i] = 0;
+}
+
+void * socketthread(void * arg)
+{
+  struct thread_info * localinfo = (struct thread_info *) arg;
+  char * buffer = malloc(sizeof(char)*BUFSIZE);
+
+  while(1)
+    {
+      int receivedbytes = recv(localinfo->socketfd,buffer, BUFSIZE, 0);
+      if(receivedbytes>0)
+	{
+	  printf("\nThread %d:\treceiving from socket:\n",localinfo->threadnum);
+	  write(1, buffer, receivedbytes);
+	  printf("\n");
+	}
+      else
+	{
+	  perror("recv");
+	  break;
+	}
+      buffer[receivedbytes+1]=EOF;
+      shell(buffer,localinfo->socketfd);
+    }
+
+
+
+  printf(ANSI_COLOR_BLUE "Thread %d:\tFinishing\n" ANSI_COLOR_RESET,localinfo->threadnum);
+  free(buffer);
+  close(localinfo->socketfd);
+  global_threads.status[localinfo->threadnum] = 0;
+  free(localinfo);
+  pthread_exit(NULL);
+}
+
+void shell(char * command, int fd)
+{
+  int pid = fork();
+  if(pid==0)
+    {
+      dup2(fd, STDOUT_FILENO);
+      dup2(fd, STDERR_FILENO);
+      execl("/bin/bash", "bash", "-c", command, (char *) NULL);
+    }
+  else
+    waitpid(pid,NULL,0);
 }

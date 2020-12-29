@@ -8,31 +8,7 @@
 #include <fcntl.h>
 
 //CLIENT
-void sendcommand(char * command, int sock, int flags, char * buffer)
-{
-  
-  printf("\nsending:\n%s", command);
-  int sentbytes = send(sock, (void*) command, strlen(command), 0);
-  if(sentbytes > 0)
-    printf("\nwritten %d\n",sentbytes);
-  else
-    {
-      perror("send");
-      printf("broken socket\n");
-      exit(0);
-    }
-  sleep(1);
-  int receivedbytes = 0;
-  for(receivedbytes = recv(sock,buffer,BUFSIZE,flags);receivedbytes>0;receivedbytes = recv(sock, buffer, BUFSIZE,flags))
-    {
-      printf("\nreceived %d\n",receivedbytes);
-      write(1, buffer, receivedbytes);
-    }
-  if(receivedbytes<0)
-    {
-      perror("recv");
-    }
-}
+void sendcommand(char * command, int sock, int flags, char * buffer);
 
 int main(int argc, char** argv)
 {
@@ -82,4 +58,30 @@ int main(int argc, char** argv)
   free(newmessage);
   free(buffer);
   return (EXIT_SUCCESS);
+}
+
+void sendcommand(char * command, int sock, int flags, char * buffer)
+{
+  
+  printf("\nsending:\n%s", command);
+  int sentbytes = send(sock, (void*) command, strlen(command), 0);
+  if(sentbytes > 0)
+    printf("\nwritten %d\n",sentbytes);
+  else
+    {
+      perror("send");
+      printf("broken socket\n");
+      exit(0);
+    }
+  sleep(1);
+  int receivedbytes = 0;
+  for(receivedbytes = recv(sock,buffer,BUFSIZE,flags);receivedbytes>0;receivedbytes = recv(sock, buffer, BUFSIZE,flags))
+    {
+      printf("\nreceived %d\n",receivedbytes);
+      write(1, buffer, receivedbytes);
+    }
+  if(receivedbytes<0)
+    {
+      perror("recv");
+    }
 }
