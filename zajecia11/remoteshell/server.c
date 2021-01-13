@@ -50,6 +50,8 @@ int main()
 
   initthreads();
 
+  printf("bound and ready to accept\n");
+
   while(1)
     {
       struct sockaddr_in test;
@@ -76,17 +78,17 @@ int queuejob()
 {
   while(1)
     {
-    for(int i=0;i<MAXTHREADS;i++)
-      {
-	//printf("thread %d = %d\n",i,global_threads.status[i]);
-	if(global_threads.status[i]==0)
-	  {
-	    global_threads.status[i]=1;
-	    return i;
-	  }
-      }
-    printf(ANSI_COLOR_RED "no empty threads!\nwaiting\n" ANSI_COLOR_RESET);
-    sleep(5);
+      for(int i=0;i<MAXTHREADS;i++)
+	{
+	  //printf("thread %d = %d\n",i,global_threads.status[i]);
+	  if(global_threads.status[i]==0)
+	    {
+	      global_threads.status[i]=1;
+	      return i;
+	    }
+	}
+      printf(ANSI_COLOR_RED "no empty threads!\nwaiting\n" ANSI_COLOR_RESET);
+      sleep(5);
     }
 }
 

@@ -66,7 +66,7 @@ void sendcommand(char * command, int sock, int flags, char * buffer)
   printf("\nsending:\n%s", command);
   int sentbytes = send(sock, (void*) command, strlen(command), 0);
   if(sentbytes > 0)
-    printf("\nwritten %d\n",sentbytes);
+    printf("\nwritten %d*\n",sentbytes-1);
   else
     {
       perror("send");
