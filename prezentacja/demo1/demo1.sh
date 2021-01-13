@@ -3,8 +3,8 @@ DIRECTORY="demo1"
 
 
 if [ ! -d "~/$DIRECTORY" ]; then
-    mkdir $DIRECTORY
-    cd $DIRECTORY && git clone https://github.com/GoblinAlchemist/ldd3
+    mkdir ~/$DIRECTORY
+    cd ~/$DIRECTORY && git clone https://github.com/GoblinAlchemist/ldd3
 fi
 
 ls /dev/
