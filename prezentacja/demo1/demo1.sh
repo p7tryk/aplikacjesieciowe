@@ -2,7 +2,7 @@
 DIRECTORY="demo1"
  
 sudo apt source linux
-sudo apt install kmod bc cpio flex libelf-dev libssl-dev libncurses5-dev
+sudo apt install build-essential git make kmod bc cpio flex libelf-dev libssl-dev libncurses5-dev
 
 if [ ! -d "~/$DIRECTORY" ]; then
     mkdir ~/$DIRECTORY

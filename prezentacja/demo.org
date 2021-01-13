@@ -1,0 +1,73 @@
+* demo1
+demo1/demo1.sh
+** scull
++ instalujemy dependendcies
++ budujemy
++ rejestrujemy urzadzenie /dev
++ insmod
+** scull0 to scull3
+https://static.lwn.net/images/pdf/LDD3/ch03.pdf
+
+Four devices, each consisting of a memory area that is both global and persistent. Global means that if the device is opened multiple times, the data contained within the device is shared by all the file descriptors that opened it.
+Persistent means that if the device is closed and reopened, data isn’t lost. This
+device can be fun to work with, because it can be accessed and tested using conventional commands, such as cp, cat, and shell I/O redirection.
+
+*** pokaz w skull.c 
+implementacje read()
+
+* demo2
+** haslo
+no to juz pokazalem logujac sie do maszyny
+** private/public keypair
+ssh-copy-id $adress
+* demo3
+** mysql klient->server forward
++ wystartowac mysql na remote host
+*** sprawdzic tunel (z klienta)
+nmap localhost -p 3307
+*** tunel (z klienta)
+ssh notarch.lan -L 3307:notarch.lan:3306 -N
++ -L clientport:remotehost:remoteport
++ -N zeby nie wykonywac komendy
+*** sprawdzic tunel (z klienta)
+nmap localhost -p 3307
+*** logowanie  (z klienta)
+mysql -h 127.0.0.1 -P 3307 -u admin -ppwsz
+** mysql server->klient forward
+*** sprawdzic tunel (z klienta)
+nmap localhost -p 3307
+*** tunel (z servera)
+ssh archfail.lan -R 3307:127.0.0.1:3306 -N
++ -R remoteport:localhost:localport
++ -N zeby nie wykonywac komendy
+*** sprawdzic tunel (z klienta)
+nmap localhost -p 3307
+*** logowanie (z klienta)
+mysql -h 127.0.0.1 -P 3307 -u admin -p
+** Xwindow forwarding
+ssh -X
+
+a pozniej po prostu otworzyc graficzna aplikacje
+* demo 4
+!!IMPORTANT
+
+PAMIETAJ PRZEJSC DO /tmp
+** scp
+mozna uzyc normalnych opcji (np -r do folderow)
+*** local -> remote
+scp localpath user@host:remotepath
+*** remote -> local
+scp user@host:remotepath localpath
+** sftp
+sftp user@remothost
+
+? - opcje
+*** put [-R]
+local -> remote
+*** get [-R]
+remote -> local
+** sshfs
+prawdziwy system plikow
+*** client
+sshfs user@remotehost:$path mountpoint
+

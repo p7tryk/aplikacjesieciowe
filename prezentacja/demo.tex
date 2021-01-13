@@ -1,0 +1,137 @@
+% Created 2021-01-13 Wed 19:45
+% Intended LaTeX compiler: pdflatex
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\author{Patryk Kaniewski}
+\date{\today}
+\title{}
+\hypersetup{
+ pdfauthor={Patryk Kaniewski},
+ pdftitle={},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 27.1 (Org mode 9.3)}, 
+ pdflang={English}}
+\begin{document}
+
+\tableofcontents \clearpage\section{demo1}
+\label{sec:org2e65028}
+demo1/demo1.sh
+\subsection{scull}
+\label{sec:org84bddf1}
+\begin{itemize}
+\item instalujemy dependendcies
+\item budujemy
+\item rejestrujemy urzadzenie /dev
+\item insmod
+\end{itemize}
+\subsection{scull0 to scull3}
+\label{sec:orgcb52b95}
+\url{https://static.lwn.net/images/pdf/LDD3/ch03.pdf}
+
+Four devices, each consisting of a memory area that is both global and persistent. Global means that if the device is opened multiple times, the data contained within the device is shared by all the file descriptors that opened it.
+Persistent means that if the device is closed and reopened, data isn’t lost. This
+device can be fun to work with, because it can be accessed and tested using conventional commands, such as cp, cat, and shell I/O redirection.
+
+\subsubsection{pokaz w skull.c}
+\label{sec:org34f20eb}
+implementacje read()
+
+\section{demo2}
+\label{sec:org1da6919}
+\subsection{haslo}
+\label{sec:org30da1da}
+no to juz pokazalem logujac sie do maszyny
+\subsection{private/public keypair}
+\label{sec:orga80c7be}
+ssh-copy-id \$adress
+\section{demo3}
+\label{sec:org31e6c6b}
+\subsection{mysql klient->server forward}
+\label{sec:org1129b8a}
+\begin{itemize}
+\item wystartowac mysql na remote host
+\end{itemize}
+\subsubsection{sprawdzic tunel (z klienta)}
+\label{sec:org51a08a9}
+nmap localhost -p 3307
+\subsubsection{tunel (z klienta)}
+\label{sec:org37912fe}
+ssh notarch.lan -L 3307:notarch.lan:3306 -N
+\begin{itemize}
+\item -L clientport:remotehost:remoteport
+\item -N zeby nie wykonywac komendy
+\end{itemize}
+\subsubsection{sprawdzic tunel (z klienta)}
+\label{sec:orga27f422}
+nmap localhost -p 3307
+\subsubsection{logowanie  (z klienta)}
+\label{sec:orgee9627b}
+mysql -h 127.0.0.1 -P 3307 -u admin -ppwsz
+\subsection{mysql server->klient forward}
+\label{sec:org7cc4362}
+\subsubsection{sprawdzic tunel (z klienta)}
+\label{sec:org9f609c2}
+nmap localhost -p 3307
+\subsubsection{tunel (z servera)}
+\label{sec:org10073e8}
+ssh archfail.lan -R 3307:127.0.0.1:3306 -N
+\begin{itemize}
+\item -R remoteport:localhost:localport
+\item -N zeby nie wykonywac komendy
+\end{itemize}
+\subsubsection{sprawdzic tunel (z klienta)}
+\label{sec:org275ac07}
+nmap localhost -p 3307
+\subsubsection{logowanie (z klienta)}
+\label{sec:org7abae57}
+mysql -h 127.0.0.1 -P 3307 -u admin -p
+\subsection{Xwindow forwarding}
+\label{sec:orgba73e40}
+ssh -X
+
+a pozniej po prostu otworzyc graficzna aplikacje
+\section{demo 4}
+\label{sec:org1a252d4}
+!!IMPORTANT
+
+PAMIETAJ PRZEJSC DO /tmp
+\subsection{scp}
+\label{sec:orgda13acb}
+mozna uzyc normalnych opcji (np -r do folderow)
+\subsubsection{local -> remote}
+\label{sec:org5d72fd3}
+scp localpath user@host:remotepath
+\subsubsection{remote -> local}
+\label{sec:org15a6e8e}
+scp user@host:remotepath localpath
+\subsection{sftp}
+\label{sec:org16a858c}
+sftp user@remothost
+
+? - opcje
+\subsubsection{put [-R]}
+\label{sec:org6651bed}
+local -> remote
+\subsubsection{get [-R]}
+\label{sec:org1cc16d9}
+remote -> local
+\subsection{sshfs}
+\label{sec:orgf595c49}
+prawdziwy system plikow
+\subsubsection{client}
+\label{sec:orgbbdc1bf}
+sshfs user@remotehost:\$path mountpoint
+\end{document}
