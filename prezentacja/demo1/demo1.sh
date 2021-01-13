@@ -9,7 +9,7 @@ fi
 
 ls /dev/
 read x
-cd $DIRECTORY/ldd3/skull && make && ./scull_load
+cd ~/$DIRECTORY/ldd3/skull && make && ./scull_load
 ls /dev/
 
 read x
