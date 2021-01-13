@@ -11,7 +11,7 @@ fi
 
 ls /dev/
 read x
-cd ~/$DIRECTORY/ldd3 && make && cd scull && ./scull_load
+cd ~/$DIRECTORY/ldd3 && make && cd scull && sudo ./scull_load
 ls /dev/
 
 read x
