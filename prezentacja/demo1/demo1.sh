@@ -1,6 +1,6 @@
 #!/bin/bash
 DIRECTORY="demo1"
-
+ 
 sudo apt source linux
 sudo apt install kmod bc cpio flex libelf-dev libssl-dev libncurses5-dev
 
