@@ -33,6 +33,7 @@ int main()
 {
   struct sockaddr_in server;
 
+  //ustawiamy i bindujemy socket do portu
   int sock, opt;
   sock = socket(AF_INET, SOCK_STREAM, 0);
   opt = 1;
@@ -47,20 +48,23 @@ int main()
     }
 
   listen(sock, 5);
-
+  //przygotowujemy structure z watkami
   initthreads();
 
   printf("bound and ready to accept\n");
 
   while(1)
     {
+      //za kazdym razem kiedy jest polaczenie akceptujemy i wybieramy watek do ktorego wysylamy
+      //queuejob() jest blokujacy wiec mamy while true
       struct sockaddr_in test;
       socklen_t testlen;
       int clientsocket;
       clientsocket=accept(sock,(struct sockaddr*) &test, &testlen);
       if(clientsocket>0)
 	{
-	  struct thread_info * newthread = malloc(sizeof(struct thread_info));
+	  //bez patrzenia chyba tutaj przydalby sie handler SIGINT ktory by zwolnil ta pamiec
+	  struct thread_info * newthread = malloc(sizeof(struct thread_info)); 
 	  newthread->threadnum = queuejob();
 	  unsigned char *a = (unsigned char *) &test.sin_addr;
 	  printf(ANSI_COLOR_GREEN "spinning thread %d to accept %d.%d.%d.%d:%d\n" ANSI_COLOR_RESET, newthread->threadnum,a[0],a[1],a[2],a[3], ntohs(test.sin_port));
@@ -105,6 +109,7 @@ void * socketthread(void * arg)
 
   while(1)
     {
+      //recv() jest blokujace wiec mamy while true
       int receivedbytes = recv(localinfo->socketfd,buffer, BUFSIZE, 0);
       if(receivedbytes>0)
 	{
@@ -117,12 +122,12 @@ void * socketthread(void * arg)
 	  perror("recv");
 	  break;
 	}
-      buffer[receivedbytes+1]=EOF;
+      buffer[receivedbytes+1]=EOF; //dajemy END OF FILE na koniec
       shell(buffer,localinfo->socketfd);
     }
 
 
-
+  //kiedy recv error (np disconnect) to free() all memory
   printf(ANSI_COLOR_BLUE "Thread %d:\tFinishing\n" ANSI_COLOR_RESET,localinfo->threadnum);
   free(buffer);
   close(localinfo->socketfd);
@@ -136,8 +141,11 @@ void shell(char * command, int fd)
   int pid = fork();
   if(pid==0)
     {
+      //forkujemy a pozniej zmieniamy stdout i stderr na socket
+      // w sumie chyba powinnysmy zamknac normalne stdout i stderr wczesniej
       dup2(fd, STDOUT_FILENO);
       dup2(fd, STDERR_FILENO);
+      // uzylem /bin/bash bo cos (niepamietam) dzialalo
       execl("/bin/bash", "bash", "-c", command, (char *) NULL);
     }
   else

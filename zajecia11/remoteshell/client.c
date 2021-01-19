@@ -12,10 +12,11 @@ void sendcommand(char * command, int sock, int flags, char * buffer);
 
 int main(int argc, char** argv)
 {
+  //niewazne
   int clientno = 0;
   if(argc>1)
     clientno = atoi(argv[1]);
-  
+  //przygotowanie polaczenia
   struct sockaddr_in server;
   unsigned char localhost[] = IP_ADDR;
   int sock;
@@ -35,18 +36,22 @@ int main(int argc, char** argv)
   char * newmessage = malloc(sizeof(char)*BUFSIZE);
   char * buffer = malloc(sizeof(char)*BUFSIZE);
 
-  fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK); //make it nonblock
+  //make it nonblock
+  fcntl(sock, F_SETFL, fcntl(sock, F_GETFL, 0) | O_NONBLOCK); 
 
   while(1)
     {
+      //while true bo fgets jest blokujace
+      
+      //cos dziwnego sie dzialo wiec lepiej wyclearowac bufor mozna w sumie calloc()
       for(int i = 0; i<BUFSIZE;i++)
-	buffer[i] = '\0'; //cos dziwnego sie dzialo wiec lepiej wyclearowac
+	buffer[i] = '\0'; 
 
-
+      //command prompt
       printf(ANSI_COLOR_GREEN "" ANSI_BOLD "\nuselesshell$ " ANSI_COLOR_RESET);
 
 
-      
+
       fgets(newmessage,BUFSIZE,stdin);
       if(strcmp(newmessage,"exit")==0)
 	break;
@@ -71,10 +76,11 @@ void sendcommand(char * command, int sock, int flags, char * buffer)
     {
       perror("send");
       printf("broken socket\n");
-      exit(0);
+      exit(-1);
     }
   sleep(1);
   int receivedbytes = 0;
+  //ten socket jest ustawiony na O_NONBLOCK wiec uzywamy for loopa zeby zebrac dane
   for(receivedbytes = recv(sock,buffer,BUFSIZE,flags);receivedbytes>0;receivedbytes = recv(sock, buffer, BUFSIZE,flags))
     {
       printf("\nreceived %d\n",receivedbytes);
