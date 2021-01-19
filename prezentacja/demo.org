@@ -25,8 +25,10 @@ ssh-copy-id $adress
 + wystartowac mysql na remote host
 *** sprawdzic tunel (z klienta)
 nmap localhost -p 3307
+*** sprawdzic polaczenie zewnetrzne
+mysql -h notarch.lan -u admin -ppwsz
 *** tunel (z klienta)
-ssh notarch.lan -L 3307:notarch.lan:3306 -N
+ssh notarch.lan -L 3307:localhost:3306 -N
 + -L clientport:remotehost:remoteport
 + -N zeby nie wykonywac komendy
 *** sprawdzic tunel (z klienta)
@@ -37,7 +39,7 @@ mysql -h 127.0.0.1 -P 3307 -u admin -ppwsz
 *** sprawdzic tunel (z klienta)
 nmap localhost -p 3307
 *** tunel (z servera)
-ssh archfail.lan -R 3307:127.0.0.1:3306 -N
+ssh archfail.lan -R 3307:localhost:3306 -N
 + -R remoteport:localhost:localport
 + -N zeby nie wykonywac komendy
 *** sprawdzic tunel (z klienta)
