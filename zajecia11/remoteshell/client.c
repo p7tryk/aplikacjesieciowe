@@ -7,11 +7,19 @@
 #include <string.h>
 #include <fcntl.h>
 
+struct wiadomosc wysylka;
+
+
 //CLIENT
 void sendcommand(char * command, int sock, int flags, char * buffer);
 
 int main(int argc, char** argv)
 {
+
+  sprintf(wysylka.lokalizacja,"/home/");
+   
+ 
+
   //niewazne
   int clientno = 0;
   if(argc>1)
@@ -33,7 +41,7 @@ int main(int argc, char** argv)
 
 
 
-  char * newmessage = malloc(sizeof(char)*BUFSIZE);
+  char * newmessage  = wysylka.command;
   char * buffer = malloc(sizeof(char)*BUFSIZE);
 
   //make it nonblock
@@ -48,11 +56,23 @@ int main(int argc, char** argv)
 	buffer[i] = '\0'; 
 
       //command prompt
-      printf(ANSI_COLOR_GREEN "" ANSI_BOLD "\nuselesshell$ " ANSI_COLOR_RESET);
-
+      printf(ANSI_COLOR_GREEN "" ANSI_BOLD "\nuselesshell" ANSI_COLOR_BLUE "%s $ " ANSI_COLOR_RESET, wysylka.lokalizacja);
+       
 
 
       fgets(newmessage,BUFSIZE,stdin);
+
+      if( strstr(newmessage, "cd")!=0){
+      
+      if(sscanf(newmessage, "%s %s",wysylka.lokalizacja ,wysylka.lokalizacja )==0){
+      perror("sscanf");
+      };
+      //printf("%d ",sscanf(newmessage, "%s %s",wysylka.lokalizacja ,wysylka.lokalizacja));
+      sendcommand("pwd",sock, 0 , buffer);
+      continue;
+      }
+
+
       if(strcmp(newmessage,"exit")==0)
 	break;
       
@@ -69,7 +89,7 @@ void sendcommand(char * command, int sock, int flags, char * buffer)
 {
   
   printf("\nsending:\n%s", command);
-  int sentbytes = send(sock, (void*) command, strlen(command), 0);
+  int sentbytes = send(sock, (void*) &wysylka, sizeof(wysylka), 0);
   if(sentbytes > 0)
     printf("\nwritten %d*\n",sentbytes-1);
   else

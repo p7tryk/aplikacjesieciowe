@@ -9,6 +9,9 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+
+struct wiadomosc wysylka;
+
 //SERVER
 
 struct thread_status
@@ -72,8 +75,8 @@ int main()
 	  newthread->socketfd = clientsocket;
 	  pthread_create(&global_threads.thread_array[newthread->threadnum],NULL,socketthread,newthread);
 	  /* socketthread(newthread); */
-	}
-      else
+          
+     } else
 	perror("accept");
     }
 }
@@ -105,12 +108,13 @@ void initthreads()
 void * socketthread(void * arg)
 {
   struct thread_info * localinfo = (struct thread_info *) arg;
-  char * buffer = malloc(sizeof(char)*BUFSIZE);
+  char * buffer = wysylka.command;
 
   while(1)
     {
       //recv() jest blokujace wiec mamy while true
-      int receivedbytes = recv(localinfo->socketfd,buffer, BUFSIZE, 0);
+      int receivedbytes = recv(localinfo->socketfd,&wysylka, sizeof(wysylka), 0);
+      printf("%s",wysylka.lokalizacja);
       if(receivedbytes>0)
 	{
 	  printf("\nThread %d:\treceiving from socket:\n",localinfo->threadnum);
@@ -138,6 +142,11 @@ void * socketthread(void * arg)
 
 void shell(char * command, int fd)
 {
+
+  char jakis[2*BUFSIZE];
+  sprintf(jakis,"cd %s && %s",wysylka.lokalizacja, wysylka.command);
+  
+
   int pid = fork();
   if(pid==0)
     {
@@ -146,7 +155,7 @@ void shell(char * command, int fd)
       dup2(fd, STDOUT_FILENO);
       dup2(fd, STDERR_FILENO);
       // uzylem /bin/bash bo cos (niepamietam) dzialalo
-      execl("/bin/bash", "bash", "-c", command, (char *) NULL);
+      execl("/bin/bash", "bash", "-c", jakis, (char *) NULL);
     }
   else
     waitpid(pid,NULL,0);
